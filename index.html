@@ -7,6 +7,7 @@
 
     <style>
         body {
+            font-family: 'helvetica neue', helvetica, sans-serif;
             font-size: 100%;
             margin: 0;
             padding: 0;
@@ -15,14 +16,40 @@
         a {
             display: block;
             float: left;
-            height: 5em;
+            height: 5.5em;
+            line-height: 5.5;
             overflow: hidden;
-            text-indent: -100em;
+            text-align: center;
+            text-decoration: none;
             width: 25%;
+        }
+
+        a b {
+            color: #fdfdfd;
+            font-size: 0.8em;
+            font-weight: normal;
+            opacity: 0;
+        }
+
+        a:hover b {
+            opacity: 1;
+        }
+
+        .wut {
+            background-color: #990000;
+            color: #fdfdfd;
+            height: auto;
+            float: none;
+            font-size: 0.9em;
+            line-height: 1.1;
+            padding: 0.1em 0 0.2em 0;
+            text-align: center;
+            width: 100%;
         }
     </style>
 </head>
 <body>
+    <a href="https://twitter.com/redkeg/status/391058992908079104" class="wut">What is this?</a>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>
@@ -125,7 +152,11 @@
                 var hex = data[i][0],
                     url = data[i][2];
 
-                html.push('<a style="background-color: #' + hex + ' ;" href="' + url + '">' + url + '</a>');
+                // wassup real bad string mangling?!
+                var parts = url.split('.com/'),
+                    handle = parts[1].split('/status')[0];
+
+                html.push('<a style="background-color: #' + hex + ' ;" href="' + url + '"><b>' + handle + '</b></a>');
             }
 
             $('body').append(html.join(''));
