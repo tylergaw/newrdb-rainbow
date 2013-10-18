@@ -151,12 +151,16 @@
             for (var i = 1; i < data.length; i += 1) {
                 var hex = data[i][0],
                     url = data[i][2];
+                try {
+                    // wassup real bad string mangling?!
+                    var parts = url.split('.com/'),
+                        handle = parts[1].split('/status')[0];
 
-                // wassup real bad string mangling?!
-                var parts = url.split('.com/'),
-                    handle = parts[1].split('/status')[0];
-
-                html.push('<a style="background-color: #' + hex + ' ;" href="' + url + '"><b>' + handle + '</b></a>');
+                    html.push('<a style="background-color: #' + hex + ' ;" href="' + url + '"><b>' + handle + '</b></a>');
+                }
+                catch (e) {
+                    console.log('non-twitter request in data, cannot display', e);
+                }
             }
 
             $('body').append(html.join(''));
