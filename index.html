@@ -137,7 +137,7 @@
 
         function loadData () {
             $.ajax({
-                url: 'data.csv',
+                url: 'https://docs.google.com/a/tylergaw.com/spreadsheet/pub?key=0AhkSscV7-91TdEVEVkQ2QUJoM0F3VnFRdlAxZzExemc&single=true&gid=1&output=csv',
                 type: 'get',
                 success: function (data) {
                     convertDataToRainbow(CSVToArray(data));
@@ -150,7 +150,7 @@
 
             for (var i = 1; i < data.length; i += 1) {
                 var hex = data[i][0],
-                    url = data[i][2];
+                    url = data[i][1];
                 try {
                     // wassup real bad string mangling?!
                     var parts = url.split('.com/'),
