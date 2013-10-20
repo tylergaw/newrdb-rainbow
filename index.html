@@ -2,54 +2,114 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>#newrdb rainbow</title>
+    <title>#newrdb quilt</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <style>
         body {
+            background-color: #f1f2de;
             font-family: 'helvetica neue', helvetica, sans-serif;
             font-size: 100%;
             margin: 0;
             padding: 0;
         }
 
-        a {
+        .folks {
+            margin-bottom: 1.6em;
+            padding: 1em;
+            overflow: hidden;
+        }
+
+         .folks a {
             display: block;
             float: left;
             height: 5.5em;
-            line-height: 5.5;
             overflow: hidden;
             text-align: center;
             text-decoration: none;
             width: 25%;
         }
 
-        a b {
-            color: #fdfdfd;
+        .folks a b {
+            background-color: rgba(0, 0, 0, 0);
+            box-shadow: inset 0 0 200px rgba(0, 0, 0, 0);
+            box-sizing: border-box;
+            color: #f1f2de;
+            display: block;
             font-size: 0.8em;
             font-weight: normal;
+            height: 100%;
+            max-width: 100%;
             opacity: 0;
+            overflow: hidden;
+            padding: 1.4em 0.3em 0 0.3em;
+            text-overflow: ellipsis;
+            transition: all 0.15s;
+            white-space: nowrap;
+            width: 100%;
         }
 
-        a:hover b {
+        .avatar {
+            border-radius: 55%;
+            display: block;
+            height: 32px;
+            margin: 0 auto;
+            overflow: hidden;
+            -webkit-transform: translateY(-50px);
+            transform: translateY(-50px);
+            transition: all 0.1s;
+            width: 32px;
+        }
+
+        .avatar img {
+            display: block;
+            width: 105%;
+        }
+
+        .folks a:hover b {
+            background-color: rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.6);
             opacity: 1;
+            transition: all 0.15s;
+        }
+
+        .folks a:hover .avatar {
+            -webkit-transform: translateY(0);
+            transform: translateY(0);
+        }
+
+        @media screen and (min-width: 700px) {
+            .folks a {
+                height: 6.5em;
+                width: 20%;
+            }
+
+            .folks a b {
+                padding-top: 2em;
+            }
         }
 
         .wut {
-            background-color: #990000;
-            color: #fdfdfd;
-            height: auto;
-            float: none;
-            font-size: 0.9em;
+            background-color: rgba(253, 253, 253, 0.8);
+            border-top: 1px solid #cfcfcf;
+            bottom: 0;
+            color: blue;
+            display: block;
+            font-size: 1em;
             line-height: 1.1;
-            padding: 0.1em 0 0.2em 0;
+            padding: 0.3em 0 0.5em 0;
+            position: fixed;
             text-align: center;
+            text-decoration: none;
             width: 100%;
+            z-index: 2;
         }
     </style>
 </head>
 <body>
     <a href="https://twitter.com/redkeg/status/391058992908079104" class="wut">What is this?</a>
+
+    <div class="folks"></div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>
@@ -151,19 +211,21 @@
             for (var i = 1; i < data.length; i += 1) {
                 var hex = data[i][0],
                     url = data[i][1];
+
                 try {
                     // wassup real bad string mangling?!
                     var parts = url.split('.com/'),
-                        handle = parts[1].split('/status')[0];
+                        handle = parts[1].split('/status')[0],
+                        avatar = '<span class="avatar"><img src="http://twitter.com/api/users/profile_image/' + handle + '"></span>';
 
-                    html.push('<a style="background-color: #' + hex + ' ;" href="' + url + '"><b>' + handle + '</b></a>');
+                    html.push('<a style="background-color: #' + hex + ' ;" href="' + url + '"><b>' + avatar + handle + '</b></a>');
                 }
                 catch (e) {
                     console.log('non-twitter request in data, cannot display', e);
                 }
             }
 
-            $('body').append(html.join(''));
+            $('.folks').html(html.join(''));
         }
 
         $(function () {
