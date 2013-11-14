@@ -112,7 +112,79 @@
     <div class="folks">Loading…</div>
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+
     <script>
+        /**
+         * Converts an RGB color value to HSL. Conversion formula
+         * adapted from http://en.wikipedia.org/wiki/HSL_color_space.
+         * Assumes r, g, and b are contained in the set [0, 255] and
+         * returns h, s, and l in the set [0, 1].
+         *
+         * @param   Number  r       The red color value
+         * @param   Number  g       The green color value
+         * @param   Number  b       The blue color value
+         * @return  Array           The HSL representation
+         */
+        function rgbToHsl(r, g, b) {
+          r /= 255, g /= 255, b /= 255;
+
+          var max = Math.max(r, g, b), min = Math.min(r, g, b);
+          var h, s, l = (max + min) / 2;
+
+          if (max == min) {
+            h = s = 0; // achromatic
+          } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+
+            switch (max) {
+              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+              case g: h = (b - r) / d + 2; break;
+              case b: h = (r - g) / d + 4; break;
+            }
+
+            h /= 6;
+          }
+
+          return [ h, s, l ];
+        }
+
+        /**
+         * Converts an RGB color value to HSV. Conversion formula
+         * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+         * Assumes r, g, and b are contained in the set [0, 255] and
+         * returns h, s, and v in the set [0, 1].
+         *
+         * @param   Number  r       The red color value
+         * @param   Number  g       The green color value
+         * @param   Number  b       The blue color value
+         * @return  Array           The HSV representation
+         */
+        function rgbToHsv(r, g, b) {
+          r /= 255, g /= 255, b /= 255;
+
+          var max = Math.max(r, g, b), min = Math.min(r, g, b);
+          var h, s, v = max;
+
+          var d = max - min;
+          s = max == 0 ? 0 : d / max;
+
+          if (max == min) {
+            h = 0; // achromatic
+          } else {
+            switch (max) {
+              case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+              case g: h = (b - r) / d + 2; break;
+              case b: h = (r - g) / d + 4; break;
+            }
+
+            h /= 6;
+          }
+
+          return [ h, s, v ];
+        }
+
         function loadData () {
             $.ajax({
                 url: 'http://aprtr.com:6969/',
@@ -121,10 +193,19 @@
             });
         }
 
+        function p (val) {
+            return parseInt(val, 16);
+        }
+
         function convertDataToQuilt (data) {
             var html = [];
 
-            $.each(data, function (i, obj) {
+            var sorted = _.sortBy(data, function (i) {
+                var hex = i.new_hash.split('#')[1];
+                return rgbToHsv(p(hex.substring(0, 1)), p(hex.substring(2, 3)), p(hex.substring(4, 5)));
+            });
+
+            $.each(sorted, function (i, obj) {
                 var hex = obj.new_hash || null,
                     url = obj.url,
                     name = obj.user_name || obj.user_screen_name,
