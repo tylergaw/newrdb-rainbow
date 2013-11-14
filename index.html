@@ -113,14 +113,11 @@
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script>
-        function loadData (manualUserObjects) {
+        function loadData () {
             $.ajax({
                 url: 'http://aprtr.com:6969/',
                 dataType: 'jsonp',
-                success: function (data) {
-                    var userObjects = $.extend(data, manualUserObjects);
-                    convertDataToQuilt(userObjects);
-                }
+                success: convertDataToQuilt
             });
         }
 
@@ -130,53 +127,17 @@
             $.each(data, function (i, obj) {
                 var hex = obj.new_hash || null,
                     url = obj.url,
+                    name = obj.user_name || obj.user_screen_name,
                     avatar = '<span class="avatar"><img src="http://twitter.com/api/users/profile_image/' + obj.user_screen_name + '"></span>'
 
-                html.push('<a style="background-color: ' + hex + ' ;" href="' + url + '"><b>' + avatar + obj.user_name + '</b></a>');
+                html.push('<a style="background-color: ' + hex + ' ;" href="' + url + '"><b>' + avatar + name + '</b></a>');
             });
 
             $('.folks').html(html.join(''));
         }
 
-        function preparePreAutomatedData () {
-            $.ajax({
-                url: 'pre-auto.json',
-                type: 'get',
-                success: convertPreAutoData
-            });
-        }
-
-        function convertPreAutoData (data) {
-            var manualUserObjects = {};
-
-            for (var i = 1; i < data.length; i += 1) {
-                var newObj = {},
-                    hex = data[i].new_hash,
-                    url = data[i].url;
-
-                if (url.indexOf('http://') > -1) {
-                    try {
-                        // wassup real bad string mangling?!
-                        var username = url.split('.com/')[1].split('/status')[0];
-
-                        newObj.new_hash = '#' + hex;
-                        newObj.url = url;
-                        newObj.user_name = username;
-                        newObj.user_screen_name = username;
-
-                        manualUserObjects['manualObj' + i] = newObj;
-                    }
-                    catch (e) {
-                        console.log('Something bad happened, bailing', e);
-                    }
-                }
-            }
-
-            loadData(manualUserObjects);
-        }
-
         $(function () {
-            preparePreAutomatedData();
+            loadData();
         });
     </script>
 </body>
