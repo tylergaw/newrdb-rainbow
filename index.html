@@ -115,8 +115,8 @@
     <script>
         function loadData () {
             $.ajax({
-                url: 'http://aprtr.com:6969/',
-                dataType: 'jsonp',
+                url: '/tweets.json',
+                dataType: 'json',
                 success: convertDataToQuilt
             });
         }
